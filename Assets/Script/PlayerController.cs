@@ -15,17 +15,35 @@ public class PlayerController : MonoBehaviour
   public Mover moverComponent;
    public float speed;
    public Boundary boundary;
-   
+   public Transform shootOrigin;
+   public GameObject shootPrefab;
+    public AudioClip shootSound;
+private AudioSource audioSource;
+
+   private void Start(){
+        moverComponent.speed=speed;
+         audioSource = GetComponent<AudioSource>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 desplazamiento= new Vector3(Input.GetAxis("Horizontal")*speed*Time.deltaTime,
-        Input.GetAxis("Vertical")*speed*Time.deltaTime,transform.position.z);
-    moverComponent.DoMove(desplazamiento);
+        Vector3 direction= new Vector3(Input.GetAxis("Horizontal"),
+        Input.GetAxis("Vertical"),transform.position.z);
+    moverComponent.direction=direction;
       float x= Mathf.Clamp(transform.position.x, boundary.xMinimun, boundary.xMaximum);
       float y= Mathf.Clamp(transform.position.y, boundary.yMinimum, boundary.yMaximum);
 
       transform.position = new Vector3(x,y);  
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Instantiate(shootPrefab, shootOrigin, false);
+              if (shootSound != null && audioSource != null)
+    {
+        audioSource.PlayOneShot(shootSound);
+    }
+        }
+
     }
 }
